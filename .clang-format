@@ -1,0 +1,46 @@
+BasedOnStyle: GNU
+IndentWidth: 2
+UseTab: Never
+ColumnLimit: 75
+
+# or LeftWithLastLine
+AlignEscapedNewlines: Right
+
+AlignTrailingComments:
+  Kind: Always
+  OverEmptyLines: 2
+
+AlignConsecutiveShortCaseStatements:
+  Enabled: true
+  AcrossEmptyLines: true
+  AcrossComments: true
+  AlignCaseArrows: true
+  AlignCaseColons: true
+
+AlignConsecutiveAssignments:
+  Enabled: true
+  AcrossEmptyLines: true
+  AcrossComments: true
+  AlignCompound: true
+  PadOperators: true
+
+AlignConsecutiveDeclarations:
+  Enabled: true
+  AcrossEmptyLines: true
+  AcrossComments: true
+
+AlignConsecutiveMacros:
+  Enabled: true
+  AcrossEmptyLines: true
+  AcrossComments: true
+
+AllowShortBlocksOnASingleLine: true
+
+AllowShortFunctionsOnASingleLine: InlineOnly
+
+RemoveBracesLLVM: true
+
+AlignAfterOpenBracket: Align
+AlignArrayOfStructures: Right
+BreakBeforeBraces: Allman
+SortIncludes: true
