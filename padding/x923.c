@@ -71,7 +71,7 @@ PAD_X923_Process (uint8_t *dst, const uint8_t *src, size_t len,
 }
 
 __attribute__ ((constructor (105))) static void
-_register ()
+_registrar ()
 {
   PAD_Entry ANSI_X923_PadderEntry = {
     .name = x923_name,
