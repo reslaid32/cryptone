@@ -16,7 +16,7 @@ jobs:
         run: sudo apt update && sudo apt install -y build-essential openssl
 
       - name: Building
-        run: make all
+        run: make buildexe
 
       - name: Testing
         run: make run
