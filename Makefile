@@ -3,7 +3,7 @@ include conf.mk
 # Compiler and flags
 CC = cc
 
-CFLAGS_COMMON = -Wall -Wextra -O2 -std=c11 -fPIC -I./include
+CFLAGS_COMMON = -Wall -Wextra -O2 -std=c99 -fPIC -I./include
 
 LDFLAGS_SO = -shared
 LDFLAGS_EXE =
