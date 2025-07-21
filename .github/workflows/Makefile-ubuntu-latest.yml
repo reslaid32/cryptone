@@ -1,0 +1,26 @@
+name: Makefile on ubuntu-latest
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Installing dependencies
+        run: sudo apt update && sudo apt install -y build-essential
+
+      - name: Building
+        run: make all
+
+      - name: Testing
+        run: make run
+
+      - name: Cleanup
+        run: make clean
+
