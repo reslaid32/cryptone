@@ -1,19 +1,18 @@
 include conf.mk
 
 # Compiler and flags
-CC = cc
-
-CFLAGS_COMMON = -Wall -Wextra -O2 -std=c99 -fPIC -I./include
+CC 		 ?= cc
+CFLAGS ?= -Wall -Wextra -O2 -std=c99 -fPIC -I./include
 
 LDFLAGS_SO = -shared
 LDFLAGS_EXE =
 
 ifeq ($(UT_VERBOSE), 0)
-	CFLAGS_COMMON += -D__UT_QUIET
+	CFLAGS += -D__UT_QUIET
 endif
 
-CFLAGS_SO     = $(CFLAGS_COMMON)
-CFLAGS_EXE    = $(CFLAGS_COMMON)
+CFLAGS_SO     = $(CFLAGS)
+CFLAGS_EXE    = $(CFLAGS)
 
 ifeq ($(ENABLE_AES_VALIDATION), 1)
 	CFLAGS_EXE  += -D__UT_AES_VALIDATION_LCRYPTO
