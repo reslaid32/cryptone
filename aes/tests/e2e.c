@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef __UT_AES_USING_LCRYPTO
+#ifdef __UT_AES_VALIDATION_LCRYPTO
 #include <openssl/evp.h>
 #endif
 
@@ -23,7 +23,7 @@ test_ecb (AES_Context *ctx, uint8_t *input, size_t len, uint8_t *key,
   AES_Context_ECB_Encrypt (ctx, input, enc, len);
   AES_Context_ECB_Decrypt (ctx, enc, dec, len);
 
-#ifdef __UT_AES_USING_LCRYPTO
+#ifdef __UT_AES_VALIDATION_LCRYPTO
   uint8_t          *ossl_enc = malloc (len);
   EVP_CIPHER_CTX   *ectx     = EVP_CIPHER_CTX_new ();
   const EVP_CIPHER *cipher
@@ -83,7 +83,7 @@ test_cbc (AES_Context *ctx, uint8_t *input, size_t len, uint8_t *key,
   memcpy (iv_enc, iv_orig, 16);
   AES_Context_CBC_Encrypt (ctx, input, enc, len, iv_enc);
 
-#ifdef __UT_AES_USING_LCRYPTO
+#ifdef __UT_AES_VALIDATION_LCRYPTO
   uint8_t *ossl_enc = malloc (len);
   uint8_t  iv2[16];
   memcpy (iv2, iv_orig, 16);
@@ -141,7 +141,7 @@ test_ctr (AES_Context *ctx, uint8_t *input, size_t len, uint8_t *key,
   AES_Context_CTR_Encrypt (ctx, input, enc, len, nonce);
   AES_Context_CTR_Encrypt (ctx, enc, dec, len, nonce);
 
-#ifdef __UT_AES_USING_LCRYPTO
+#ifdef __UT_AES_VALIDATION_LCRYPTO
   uint8_t *ossl_enc = malloc (len);
   uint8_t  nonce2[16];
   memcpy (nonce2, nonce, 16);

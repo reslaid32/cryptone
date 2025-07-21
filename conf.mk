@@ -1,0 +1,3 @@
+ENABLE_AES_VALIDATION := 1
+UT_VERBOSE 						:= 0
+

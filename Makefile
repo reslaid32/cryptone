@@ -1,8 +1,24 @@
+include conf.mk
+
 # Compiler and flags
 CC = cc
-CFLAGS = -Wall -Wextra -O2 -std=c11 -fPIC -I./include -D__UT_NO_FPRINTF -D__UT_AES_USING_LCRYPTO
-LDFLAGS_SO = -shared -lcrypto
-LDFLAGS_EXE = -lcrypto
+
+CFLAGS_COMMON = -Wall -Wextra -O2 -std=c11 -fPIC -I./include
+
+LDFLAGS_SO = -shared
+LDFLAGS_EXE =
+
+ifeq ($(UT_VERBOSE), 0)
+	CFLAGS_COMMON += -D__UT_QUIET
+endif
+
+CFLAGS_SO     = $(CFLAGS_COMMON)
+CFLAGS_EXE    = $(CFLAGS_COMMON)
+
+ifeq ($(ENABLE_AES_VALIDATION), 1)
+	CFLAGS_EXE  += -D__UT_AES_VALIDATION_LCRYPTO
+	LDFLAGS_EXE += -lcrypto
+endif
 
 SRCDIRS_COMMON = aes padding queue wunit
 SRCDIRS_EXE    = $(SRCDIRS_COMMON) unit etc
@@ -54,8 +70,16 @@ $(EXETARGET): $(OBJS_EXE)
 # --- Compilation ---
 $(OBJDIR)/%.o: %.c
 	@mkdir -p $(dir $@)
+
 	@printf "CC     %-50s (from %s)\n" "$@" "$<"
-	@$(CC) $(CFLAGS) -c $< -o $@
+
+	@srcdir=$(dir $<); \
+	common_dirs="$(SRCDIRS_COMMON)"; \
+	if echo "$$common_dirs" | grep -q "$${srcdir%%/}"; then \
+		$(CC) $(CFLAGS_SO) -c $< -o $@; \
+	else \
+		$(CC) $(CFLAGS_EXE) -c $< -o $@; \
+	fi
 
 # --- Run ---
 run: $(EXETARGET)

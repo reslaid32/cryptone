@@ -1,7 +1,7 @@
 #ifndef __UNIT_IMP_H
 #define __UNIT_IMP_H
 
-#ifdef __UT_NO_FPRINTF
+#ifdef __UT_QUIET
 #define __UT_FPRINTF(...)
 #endif
 
