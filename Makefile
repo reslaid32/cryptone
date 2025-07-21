@@ -65,6 +65,7 @@ buildexe: $(EXETARGET)
 
 $(EXETARGET): $(OBJS_EXE)
 	@printf "LD     %-50s (from %d object files)\n" "$@" "$(words $^)"
+	@printf "LDFLAGS: %s\n" "$(LDFLAGS_EXE)"
 	@$(CC) $(LDFLAGS_EXE) -o $@ $^
 
 # --- Compilation ---
