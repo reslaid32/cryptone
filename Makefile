@@ -1,37 +1,98 @@
 # Compiler and flags
-CC = gcc
-CFLAGS = -Wall -Wextra -O2 -std=c11 -I./include -D__UT_NO_FPRINTF -D__UT_AES_USING_LCRYPTO
-LDFLAGS = -lcrypto
+CC = cc
+CFLAGS = -Wall -Wextra -O2 -std=c11 -fPIC -I./include -D__UT_NO_FPRINTF -D__UT_AES_USING_LCRYPTO
+LDFLAGS_SO = -shared -lcrypto
+LDFLAGS_EXE = -lcrypto
 
-# Directories to search for source files
-# Works like a subproject
-SRCDIRS = aes padding queue unit etc
+SRCDIRS_COMMON = aes padding queue wunit
+SRCDIRS_EXE    = $(SRCDIRS_COMMON) unit etc
 
-# Recursive wildcard function (GNU Make)
-rwildcard=$(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
+rwildcard = $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
 
-# Find all .c sources recursively
-SRCS := $(call rwildcard,$(SRCDIRS)/,*.c)
+BUILD_DIR = build
+OBJDIR = $(BUILD_DIR)/obj
+BINDIR = $(BUILD_DIR)/bin
 
-# Objects go to obj/, preserving directory structure
-OBJDIR = obj
-OBJS := $(patsubst %.c,$(OBJDIR)/%.o,$(SRCS))
+SRCS_SO  := $(call rwildcard,$(SRCDIRS_COMMON)/,*.c)
+SRCS_EXE := $(call rwildcard,$(SRCDIRS_EXE)/,*.c)
 
-# Target executable
-TARGET = main
+SRCS_NO_MAIN := $(filter-out %/main.c,$(SRCS_SO))
+MAIN_SRC     := $(filter %/main.c,$(SRCS_EXE))
 
-.PHONY: all clean
+OBJS_SO  := $(patsubst %.c,$(OBJDIR)/%.o,$(SRCS_NO_MAIN))
+OBJS_EXE := $(patsubst %.c,$(OBJDIR)/%.o,$(SRCS_EXE))
 
-all: $(TARGET)
+LIBNAME    = cryptone
+LIBTARGET  = $(BUILD_DIR)/lib$(LIBNAME).so
+EXETARGET  = $(BUILD_DIR)/main
 
-# Link final executable
-$(TARGET): $(OBJS)
-	$(CC) $(LDFLAGS) $^ -o $@
+PREFIX     ?= /usr/local
+LIBDIR     = $(PREFIX)/lib
+INCLUDEDIR = $(PREFIX)/include
 
-# Compile .c -> .o with directory creation
+HDR_SRC_DIR := include/cryptone
+HDR_DST_DIR := $(INCLUDEDIR)/cryptone
+
+.PHONY: all buildlib buildexe clean install uninstall
+
+all: buildlib buildexe
+
+# --- Shared Library ---
+buildlib: $(LIBTARGET)
+
+$(LIBTARGET): $(OBJS_SO)
+	@printf "LD     %-50s (from %d object files)\n" "$@" "$(words $^)"
+	@$(CC) $(LDFLAGS_SO) -o $@ $^
+
+# --- Executable ---
+buildexe: $(EXETARGET)
+
+$(EXETARGET): $(OBJS_EXE)
+	@printf "LD     %-50s (from %d object files)\n" "$@" "$(words $^)"
+	@$(CC) $(LDFLAGS_EXE) -o $@ $^
+
+# --- Compilation ---
 $(OBJDIR)/%.o: %.c
 	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -I./aes -I./padding -I./queue -c $< -o $@
+	@printf "CC     %-50s (from %s)\n" "$@" "$<"
+	@$(CC) $(CFLAGS) -c $< -o $@
 
+# --- Run ---
+run: $(EXETARGET)
+	@printf "RUN    %-50s\n" "$(EXETARGET)"
+	@$(EXETARGET)
+
+# --- Install ---
+install: $(LIBTARGET)
+	@libname=$(notdir $(LIBTARGET)); \
+	 libdst=$(abspath $(LIBDIR)); \
+	 printf "INST   %-50s (to %s/)\n" "$$libname" "$$libdst"; \
+	 install -d "$$libdst"; \
+	 install -m 0755 "$(LIBTARGET)" "$$libdst/"; \
+	 ldconfig
+
+	@hdrsrc=$(HDR_SRC_DIR); \
+	 hdrdst=$(abspath $(HDR_DST_DIR)); \
+	 printf "INST   %-50s (to %s/)\n" "headers from $$hdrsrc" "$$hdrdst"; \
+	 find "$$hdrsrc" -name '*.h' | while read -r header; do \
+	     rel_path="$${header#$$hdrsrc/}"; \
+	     dest_dir="$$hdrdst/$$(dirname "$$rel_path")"; \
+	     install -d "$$dest_dir"; \
+	     install -m 0644 "$$header" "$$dest_dir/"; \
+	 done
+
+# --- Uninstall ---
+uninstall:
+	@libname=$(notdir $(LIBTARGET)); \
+	 libdst=$(abspath $(LIBDIR)); \
+	 printf "UNST   %-50s (to %s/)\n" "$$libname" "$$libdst"; \
+	 rm -f "$(LIBDIR)/$(notdir $(LIBTARGET))"; \
+	 ldconfig
+
+	@printf "UNST   headers from %s/\n" "$(HDR_DST_DIR)"
+	@rm -rf "$(HDR_DST_DIR)"
+
+# --- Clean ---
 clean:
-	rm -rf $(OBJDIR) $(TARGET)
+	@printf "RM     %-50s (includes target)\n" "$(BUILD_DIR)/"
+	@rm -rf $(BUILD_DIR)/
