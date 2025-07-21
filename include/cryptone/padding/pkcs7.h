@@ -1,5 +1,5 @@
-#ifndef __PKCS7_IMP_H
-#define __PKCS7_IMP_H
+#ifndef __CRYPTONE_PADDING_PKCS7_H
+#define __CRYPTONE_PADDING_PKCS7_H
 
 #include "padbus.h"
 

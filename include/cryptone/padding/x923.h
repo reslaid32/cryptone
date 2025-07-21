@@ -1,5 +1,5 @@
-#ifndef __X923_IMP_H
-#define __X923_IMP_H
+#ifndef __CRYPTONE_PADDING_X923_H
+#define __CRYPTONE_PADDING_X923_H
 
 #include "padbus.h"
 

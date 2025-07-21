@@ -1,5 +1,5 @@
-#ifndef __PADBUS_IMP_H
-#define __PADBUS_IMP_H
+#ifndef __CRYPTONE_PADDING_PADBUS_H
+#define __CRYPTONE_PADDING_PADBUS_H
 
 #include <stddef.h>
 #include <stdint.h>

@@ -1,4 +1,5 @@
-#include <cryptone/aes.h>
+#ifndef _LIB_H
+#define _LIB_H
 
 #include <fcntl.h>
 #include <stdint.h>
@@ -7,7 +8,7 @@
 #include <time.h>
 #include <unistd.h>
 
-ssize_t
+static ssize_t
 fhexdump (FILE *stream, uint8_t const *buf, size_t buflen)
 {
   ssize_t charn = 0;
@@ -19,13 +20,13 @@ fhexdump (FILE *stream, uint8_t const *buf, size_t buflen)
   return charn;
 }
 
-ssize_t
+static ssize_t
 hexdump (uint8_t const *buf, size_t buflen)
 {
   return fhexdump (stdout, buf, buflen);
 }
 
-ssize_t
+static ssize_t
 fhexdump_labeled (FILE *stream, const char *label, size_t label_max,
                   const uint8_t *buf, size_t buflen)
 {
@@ -37,14 +38,14 @@ fhexdump_labeled (FILE *stream, const char *label, size_t label_max,
   return charn;
 }
 
-ssize_t
+static ssize_t
 hexdump_labeled (const char *label, size_t label_max, const uint8_t *buf,
                  size_t buflen)
 {
   return fhexdump_labeled (stdout, label, label_max, buf, buflen);
 }
 
-uint8_t
+static uint8_t
 randb (uint8_t min, uint8_t max)
 {
   if (min > max)
@@ -56,7 +57,7 @@ randb (uint8_t min, uint8_t max)
   return (uint8_t)(min + rand () % (max - min + 1));
 }
 
-void
+static void
 randfill (uint8_t *buf, size_t len)
 {
   int fd = open ("/dev/urandom", O_RDONLY);
@@ -66,39 +67,4 @@ randfill (uint8_t *buf, size_t len)
   close (fd);
 }
 
-int
-main (void)
-{
-  size_t  label_max = 10;
-
-  uint8_t key[AES256_KEY_BYTES];
-  uint8_t nonce[AES_BLOCK_SIZE];
-  uint8_t plaintext[64]
-      = "CTR mode test: encrypting 64 bytes of message data!";
-  uint8_t ciphertext[sizeof (plaintext)];
-  uint8_t decrypted[sizeof (plaintext)];
-
-  randfill (key, sizeof (key));
-  randfill (nonce, sizeof (nonce));
-
-  hexdump_labeled ("Key", label_max, key, sizeof (key));
-  hexdump_labeled ("Nonce", label_max, nonce, sizeof (nonce));
-  hexdump_labeled ("Plaintext", label_max, plaintext, sizeof (plaintext));
-
-  AES_Context *ctx = AES_Context_Create ();
-  AES_Context_FlushInit (ctx, key, sizeof (key));
-
-  AES_Context_CTR_Encrypt (ctx, plaintext, ciphertext, sizeof (plaintext),
-                           nonce);
-  hexdump_labeled ("Ciphertext", label_max, ciphertext,
-                   sizeof (ciphertext));
-
-  AES_Context_FlushInit (ctx, key, sizeof (key));
-  AES_Context_CTR_Encrypt (ctx, ciphertext, decrypted, sizeof (ciphertext),
-                           nonce);
-  hexdump_labeled ("Decrypted", label_max, decrypted, sizeof (decrypted));
-
-  AES_Context_Destroy (ctx);
-
-  return 0;
-}
+#endif
