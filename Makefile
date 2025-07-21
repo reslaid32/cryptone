@@ -1,9 +1,10 @@
 # Compiler and flags
 CC = gcc
-CFLAGS = -Wall -Wextra -O2 -std=c11 -D__UT_NO_FPRINTF -D__UT_AES_USING_LCRYPTO
+CFLAGS = -Wall -Wextra -O2 -std=c11 -I./include -D__UT_NO_FPRINTF -D__UT_AES_USING_LCRYPTO
 LDFLAGS = -lcrypto
 
 # Directories to search for source files
+# Works like a subproject
 SRCDIRS = aes padding queue unit etc
 
 # Recursive wildcard function (GNU Make)

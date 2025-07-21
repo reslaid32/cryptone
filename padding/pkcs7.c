@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "padbus.h"
+#include "../include/cryptone/padding/padbus.h"
 
 static const char *pkcs7_name = "pkcs7";
 

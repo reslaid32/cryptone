@@ -4,8 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "aes.h"
-#include "constants.h"
+#include "../include/cryptone/aes.h"
 #include "helpers.h"
 
 uint32_t

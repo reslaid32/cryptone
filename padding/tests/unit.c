@@ -4,13 +4,16 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "../../include/cryptone/padding/padbus.h"
 #include "../../unit/unit.h"
-#include "../padbus.h"
 
 void
 test_padder (PAD_Identifier id, const char *name, PAD_Padder *padder,
              uint8_t *orig_buf, size_t orig_len, size_t block_size)
 {
+  (void)id;
+  (void)name;
+
   if (!padder || !orig_buf)
     return;
 
@@ -87,16 +90,22 @@ test_padder (PAD_Identifier id, const char *name, PAD_Padder *padder,
     free (unpadded_buf);
 }
 
+// inputs only name of padding
 int
 test_padder_wrapper (const char *name, uint8_t *buf, size_t len,
                      size_t block_size)
 {
+  // finds id by name (on registered padders)
   PAD_Identifier id;
   if (PAD_Find (name, &id) != 0)
     return -1;
+
+  // gets padder by id
   PAD_Padder *padder;
   if ((padder = PAD_Get (id)) == NULL)
     return -2;
+
+  // tests padding with this padder
   test_padder (id, name, padder, buf, len, block_size);
   return 0;
 }

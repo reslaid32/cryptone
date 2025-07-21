@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "padbus.h"
+#include "../include/cryptone/padding/padbus.h"
 
 static const char *x923_name = "x923";
 

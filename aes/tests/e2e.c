@@ -1,5 +1,6 @@
 #include "../../unit/unit.h"
-#include "../aes.h"
+
+#include "../../include/cryptone/aes.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,37 +9,6 @@
 #ifdef __UT_AES_USING_LCRYPTO
 #include <openssl/evp.h>
 #endif
-
-static void
-test_blocks (AES_Context *ctx, uint8_t *input, uint8_t *key,
-             size_t key_len)
-{
-  AES_Context_Flush (ctx);
-
-  uint8_t enc[16], dec[16];
-
-  AES_Context_Init (ctx, key, key_len);
-  AES_Context_EncryptBlock (ctx, input, enc);
-  AES_Context_DecryptBlock (ctx, enc, dec);
-
-  __UT_PRINTF ("Encrypted:\n");
-  for (int i = 0; i < 16; ++i)
-    __UT_PRINTF ("%02x ", enc[i]);
-  __UT_PRINTF ("\n");
-
-  __UT_PRINTF ("Decrypted:\n");
-  for (int i = 0; i < 16; ++i)
-    __UT_PRINTF ("%02x ", dec[i]);
-  __UT_PRINTF ("\n");
-
-  __UT_PRINTF ("Input:\n");
-  for (int i = 0; i < 16; ++i)
-    __UT_PRINTF ("%02x ", input[i]);
-  __UT_PRINTF ("\n");
-
-  UT_Assert (memcmp (input, dec, 16) == 0,
-             "AES block decrypt must match input");
-}
 
 static void
 test_ecb (AES_Context *ctx, uint8_t *input, size_t len, uint8_t *key,
