@@ -2,7 +2,7 @@ include conf.mk
 
 # Compiler and flags
 CC 		 ?= cc
-CFLAGS ?= -Wall -Wextra -O2 -std=c99 -fPIC -I./include
+CFLAGS ?= -Wall -Wextra -O2 -std=c99 -fPIC -I./include -march=native
 
 LDFLAGS_SO = -shared
 LDFLAGS_EXE =
@@ -19,7 +19,7 @@ ifeq ($(ENABLE_AES_VALIDATION), 1)
 	LDFLAGS_EXE += -lcrypto
 endif
 
-SRCDIRS_COMMON = aes padding queue wunit
+SRCDIRS_COMMON = aes padding queue error wunit
 SRCDIRS_EXE    = $(SRCDIRS_COMMON) unit etc
 
 rwildcard = $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))

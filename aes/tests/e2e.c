@@ -26,8 +26,13 @@ test_ecb (AES_Context *ctx, uint8_t *input, size_t len, uint8_t *key,
 #ifdef __UT_AES_VALIDATION_LCRYPTO
   uint8_t          *ossl_enc = malloc (len);
   EVP_CIPHER_CTX   *ectx     = EVP_CIPHER_CTX_new ();
-  const EVP_CIPHER *cipher
-      = (key_len == 16) ? EVP_aes_128_ecb () : EVP_aes_256_ecb ();
+  const EVP_CIPHER *cipher   = NULL;
+  if (key_len == 16)
+    cipher = EVP_aes_128_ecb ();
+  else if (key_len == 24)
+    cipher = EVP_aes_192_ecb ();
+  else if (key_len == 32)
+    cipher = EVP_aes_256_ecb ();
 
   EVP_EncryptInit_ex (ectx, cipher, NULL, key, NULL);
   EVP_CIPHER_CTX_set_padding (ectx, 0);
@@ -70,7 +75,7 @@ test_ecb (AES_Context *ctx, uint8_t *input, size_t len, uint8_t *key,
 
 static void
 test_cbc (AES_Context *ctx, uint8_t *input, size_t len, uint8_t *key,
-          size_t key_len, uint8_t iv_orig[16])
+          size_t key_len, uint8_t iv_orig[AES_BLOCK_SIZE])
 {
   AES_Context_Flush (ctx);
 
@@ -85,12 +90,17 @@ test_cbc (AES_Context *ctx, uint8_t *input, size_t len, uint8_t *key,
 
 #ifdef __UT_AES_VALIDATION_LCRYPTO
   uint8_t *ossl_enc = malloc (len);
-  uint8_t  iv2[16];
-  memcpy (iv2, iv_orig, 16);
+  uint8_t  iv2[AES_BLOCK_SIZE];
+  memcpy (iv2, iv_orig, AES_BLOCK_SIZE);
 
-  EVP_CIPHER_CTX   *ectx = EVP_CIPHER_CTX_new ();
-  const EVP_CIPHER *cipher
-      = (key_len == 16) ? EVP_aes_128_cbc () : EVP_aes_256_cbc ();
+  EVP_CIPHER_CTX   *ectx   = EVP_CIPHER_CTX_new ();
+  const EVP_CIPHER *cipher = NULL;
+  if (key_len == 16)
+    cipher = EVP_aes_128_cbc ();
+  else if (key_len == 24)
+    cipher = EVP_aes_192_cbc ();
+  else if (key_len == 32)
+    cipher = EVP_aes_256_cbc ();
 
   EVP_EncryptInit_ex (ectx, cipher, NULL, key, iv2);
   EVP_CIPHER_CTX_set_padding (ectx, 0);
@@ -130,25 +140,35 @@ test_cbc (AES_Context *ctx, uint8_t *input, size_t len, uint8_t *key,
 
 static void
 test_ctr (AES_Context *ctx, uint8_t *input, size_t len, uint8_t *key,
-          size_t key_len, uint8_t nonce[16])
+          size_t key_len, uint8_t nonce[AES_BLOCK_SIZE])
 {
   AES_Context_Flush (ctx);
 
   uint8_t *enc = malloc (len);
   uint8_t *dec = malloc (len);
 
+  uint8_t  nonce_copy[AES_BLOCK_SIZE];
+  memcpy (nonce_copy, nonce, AES_BLOCK_SIZE);
+
   AES_Context_Init (ctx, key, key_len);
-  AES_Context_CTR_Encrypt (ctx, input, enc, len, nonce);
-  AES_Context_CTR_Encrypt (ctx, enc, dec, len, nonce);
+  AES_Context_CTR_Encrypt (ctx, input, enc, len, nonce_copy);
+
+  memcpy (nonce_copy, nonce, AES_BLOCK_SIZE);
+  AES_Context_CTR_Encrypt (ctx, enc, dec, len, nonce_copy);
 
 #ifdef __UT_AES_VALIDATION_LCRYPTO
   uint8_t *ossl_enc = malloc (len);
-  uint8_t  nonce2[16];
-  memcpy (nonce2, nonce, 16);
+  uint8_t  nonce2[AES_BLOCK_SIZE];
+  memcpy (nonce2, nonce, AES_BLOCK_SIZE);
 
-  EVP_CIPHER_CTX   *ectx = EVP_CIPHER_CTX_new ();
-  const EVP_CIPHER *cipher
-      = (key_len == 16) ? EVP_aes_128_ctr () : EVP_aes_256_ctr ();
+  EVP_CIPHER_CTX   *ectx   = EVP_CIPHER_CTX_new ();
+  const EVP_CIPHER *cipher = NULL;
+  if (key_len == 16)
+    cipher = EVP_aes_128_ctr ();
+  else if (key_len == 24)
+    cipher = EVP_aes_192_ctr ();
+  else if (key_len == 32)
+    cipher = EVP_aes_256_ctr ();
 
   EVP_EncryptInit_ex (ectx, cipher, NULL, key, nonce2);
   EVP_CIPHER_CTX_set_padding (ectx, 0);
@@ -203,10 +223,10 @@ _unit (void)
   uint8_t input[16] = { 0x6b, 0xc1, 0xbe, 0xe2, 0x2e, 0x40, 0x9f, 0x96,
                         0xe9, 0x3d, 0x7e, 0x11, 0x73, 0x93, 0x17, 0x2a };
 
-  uint8_t iv[16]    = { 0 };
-  uint8_t nonce[16] = { 0 };
+  uint8_t iv[AES_BLOCK_SIZE]    = { 0 };
+  uint8_t nonce[AES_BLOCK_SIZE] = { 0 };
 
-  AES_Context *ctx  = AES_Context_Create ();
+  AES_Context *ctx              = AES_Context_Create ();
 
   __UT_PRINTF ("=== AES-128 ===\n");
   __UT_PRINTF ("\nECB mode:\n");

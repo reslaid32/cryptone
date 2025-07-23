@@ -1,19 +1,20 @@
+#include "../api/api.h"
 #include "../unit/unit.h"
 
-__attribute__ ((weak)) void
+WEAK void
 UT_Register (unit_test_fn fn, const char *name)
 {
   (void)fn;
   (void)name;
 }
 
-__attribute__ ((weak)) int
+WEAK int
 UT_RunAll (void)
 {
   return 0;
 }
 
-__attribute__ ((weak)) void
+WEAK void
 UT_BasicAssert (int condition, const char *cond_str, const char *msg)
 {
   (void)condition;

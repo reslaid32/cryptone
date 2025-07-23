@@ -6,6 +6,7 @@
 
 #define AES_MAX_RND      14
 #define AES128_KEY_BYTES 16
+#define AES192_KEY_BYTES 24
 #define AES256_KEY_BYTES 32
 #define AES_BLOCK_SIZE   16
 
@@ -63,28 +64,6 @@ static const uint32_t AES_RCon[10]
     = { 0x01000000, 0x02000000, 0x04000000, 0x08000000, 0x10000000,
         0x20000000, 0x40000000, 0x80000000, 0x1B000000, 0x36000000 };
 
-uint32_t AES_RotWord (uint32_t w);
-uint32_t AES_SubWord (uint32_t w);
-
-// -------------------- AES Key Schedule --------------------
-
-void     AES_KeyExpansion128 (const uint8_t *key, uint32_t *w);
-void     AES_KeyExpansion256 (const uint8_t *key, uint32_t *w);
-
-// -------------------- AES Transformations --------------------
-
-void     AES_SubBytes (uint8_t s[4][4]);
-void     AES_InvSubBytes (uint8_t s[4][4]);
-
-void     AES_ShiftRows (uint8_t s[4][4]);
-void     AES_InvShiftRows (uint8_t s[4][4]);
-
-void     AES_MixColumns (uint8_t s[4][4]);
-
-void     AES_InvMixColumns (uint8_t s[4][4]);
-
-void     AES_AddRoundKey (uint8_t s[4][4], const uint32_t *rk);
-
 typedef struct AES_Context
 {
   uint32_t rndk[60];
@@ -102,23 +81,11 @@ void         AES_Context_Init (AES_Context *ctx, const uint8_t *key,
 void         AES_Context_FlushInit (AES_Context *ctx, const uint8_t *key,
                                     size_t key_len);
 
-void         AES_EncryptBlock (const uint8_t *in, uint8_t *out,
-                               const uint32_t *rndk, int rndn);
-
-void         AES_DecryptBlock (const uint8_t *in, uint8_t *out,
-                               const uint32_t *rndk, int rndn);
-
 void AES_Context_EncryptBlock (const AES_Context *ctx, const uint8_t *in,
                                uint8_t *out);
 
 void AES_Context_DecryptBlock (const AES_Context *ctx, const uint8_t *in,
                                uint8_t *out);
-
-void AES_ECB_Encrypt (const uint8_t *in, uint8_t *out, size_t len,
-                      const uint32_t *rndk, int rndn);
-
-void AES_ECB_Decrypt (const uint8_t *in, uint8_t *out, size_t len,
-                      const uint32_t *rndk, int rndn);
 
 void AES_Context_ECB_Encrypt (const AES_Context *ctx, const uint8_t *in,
                               uint8_t *out, size_t len);
@@ -126,24 +93,12 @@ void AES_Context_ECB_Encrypt (const AES_Context *ctx, const uint8_t *in,
 void AES_Context_ECB_Decrypt (const AES_Context *ctx, const uint8_t *in,
                               uint8_t *out, size_t len);
 
-void AES_CBC_Encrypt (const uint8_t *in, uint8_t *out, size_t len,
-                      uint8_t iv[AES_BLOCK_SIZE], const uint32_t *rndk,
-                      int rndn);
-
-void AES_CBC_Decrypt (const uint8_t *in, uint8_t *out, size_t len,
-                      uint8_t iv[AES_BLOCK_SIZE], const uint32_t *rndk,
-                      int rndn);
-
 void AES_Context_CBC_Encrypt (const AES_Context *ctx, const uint8_t *in,
                               uint8_t *out, size_t len,
                               uint8_t iv[AES_BLOCK_SIZE]);
 void AES_Context_CBC_Decrypt (const AES_Context *ctx, const uint8_t *in,
                               uint8_t *out, size_t len,
                               uint8_t iv[AES_BLOCK_SIZE]);
-
-void AES_CTR_Encrypt (const uint8_t *in, uint8_t *out, size_t len,
-                      uint8_t nonce[AES_BLOCK_SIZE], const uint32_t *rndk,
-                      int rndn);
 
 void AES_Context_CTR_Encrypt (const AES_Context *ctx, const uint8_t *in,
                               uint8_t *out, size_t len,

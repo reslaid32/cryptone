@@ -1,0 +1,6 @@
+CompileFlags:
+  Add: 
+    - -march=native
+    - -Wall
+    - -Wextra
+    - -Werror
