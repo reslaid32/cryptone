@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <time.h>
 
-typedef enum
+typedef enum log_lvl
 {
   LOG_TRACE,
   LOG_VERBOSE,
@@ -17,21 +17,38 @@ typedef enum
   LOG_LEVEL_COUNT
 } LogLevel;
 
-extern LogLevel log_level;
-extern FILE    *log_stream;
+void     LOG_SetLevel (LogLevel level);
+LogLevel LOG_GetLevel (void);
 
-void            log_set_level (LogLevel level);
-void            log_set_stream (FILE *stream);
-void log_log (LogLevel level, const char *file, int line, const char *fmt,
-              ...);
+void     LOG_SetStream (FILE *stream);
+FILE    *LOG_GetStream (void);
 
-#define log_trace(...) log_log (LOG_TRACE, __FILE__, __LINE__, __VA_ARGS__)
-#define log_verbose(...)                                                  \
-  log_log (LOG_VERBOSE, __FILE__, __LINE__, __VA_ARGS__)
-#define log_debug(...) log_log (LOG_DEBUG, __FILE__, __LINE__, __VA_ARGS__)
-#define log_info(...)  log_log (LOG_INFO, __FILE__, __LINE__, __VA_ARGS__)
-#define log_warn(...)  log_log (LOG_WARN, __FILE__, __LINE__, __VA_ARGS__)
-#define log_error(...) log_log (LOG_ERROR, __FILE__, __LINE__, __VA_ARGS__)
-#define log_fatal(...) log_log (LOG_FATAL, __FILE__, __LINE__, __VA_ARGS__)
+void     LOG_SetAutoNewline (int autonewl);
+int      LOG_GetAutoNewline (void);
+
+void     LOG_Enable (int enable);
+int      LOG_Enabled (void);
+
+void     LOG_vprintf (const char *fmt, va_list va);
+void     LOG_printf (const char *fmt, ...);
+
+void     LOG_PushFrame (void);
+void     LOG_PopFrame (void);
+
+void LOG_Emit (LogLevel level, const char *file, int line, const char *fmt,
+               ...);
+
+#define LOG_Trace(...)                                                    \
+  LOG_Emit (LOG_TRACE, __FILE__, __LINE__, __VA_ARGS__)
+#define LOG_Verbose(...)                                                  \
+  LOG_Emit (LOG_VERBOSE, __FILE__, __LINE__, __VA_ARGS__)
+#define LOG_Debug(...)                                                    \
+  LOG_Emit (LOG_DEBUG, __FILE__, __LINE__, __VA_ARGS__)
+#define LOG_Info(...) LOG_Emit (LOG_INFO, __FILE__, __LINE__, __VA_ARGS__)
+#define LOG_Warn(...) LOG_Emit (LOG_WARN, __FILE__, __LINE__, __VA_ARGS__)
+#define LOG_Error(...)                                                    \
+  LOG_Emit (LOG_ERROR, __FILE__, __LINE__, __VA_ARGS__)
+#define LOG_Fatal(...)                                                    \
+  LOG_Emit (LOG_FATAL, __FILE__, __LINE__, __VA_ARGS__)
 
 #endif // LOG_H

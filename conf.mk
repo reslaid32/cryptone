@@ -1,3 +1,3 @@
 ENABLE_AES_VALIDATION := 1
-UT_VERBOSE 						:= 0
+UT_VERBOSE 						:= 1
 

@@ -95,15 +95,11 @@ test_destroy (void)
 static void
 _unit (void)
 {
-  __UT_PRINTF ("Running AtomicQueue unit tests...\n");
-
   test_init_and_empty ();
   test_enqueue_dequeue_one ();
   test_fifo_order ();
   test_peek ();
   test_destroy ();
-
-  __UT_PRINTF ("AtomicQueue unit tests completed.\n");
 }
 
 __attribute__ ((constructor (150))) static void
