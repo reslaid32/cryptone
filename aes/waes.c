@@ -6,6 +6,19 @@
 #include <stdlib.h>
 #include <string.h>
 
+/* generic */
+WEAK int
+AES_Impl_Id (void)
+{
+  return 0;
+}
+
+WEAK const char *
+AES_Impl_String (void)
+{
+  return "aes/generic";
+}
+
 WEAK void
 AES_Context_EncryptBlock (const AES_Context *ctx, const uint8_t *in,
                           uint8_t *out)

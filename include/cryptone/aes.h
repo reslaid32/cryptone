@@ -75,6 +75,9 @@ AES_Context *AES_Context_Create ();
 void         AES_Context_Flush (AES_Context *ctx);
 void         AES_Context_Destroy (AES_Context *ctx);
 
+int          AES_Impl_Id (void);
+const char  *AES_Impl_String (void);
+
 void         AES_Context_Init (AES_Context *ctx, const uint8_t *key,
                                size_t key_len);
 

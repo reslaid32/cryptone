@@ -1,6 +1,7 @@
 #ifdef __AES__
 
-#include "../include/cryptone/aes.h"
+#include "../../include/cryptone/aes.h"
+
 #include <assert.h>
 
 #include <wmmintrin.h>
