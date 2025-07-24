@@ -15,7 +15,7 @@ static AtomicQueue m_tst_queue;
 __attribute__ ((constructor (103))) static void
 _Init ()
 {
-  AQ_Init (&m_tst_queue);
+  C1_AQ_Init (&m_tst_queue);
 }
 
 void
@@ -30,13 +30,13 @@ UT_Register (unit_test_fn fn, const char *name)
   t->fn   = fn;
   t->name = name;
 
-  AQ_Enqueue (&m_tst_queue, t);
+  C1_AQ_Enqueue (&m_tst_queue, t);
 }
 
 int
 UT_RunAll (void)
 {
-  if (AQ_Empty (&m_tst_queue))
+  if (C1_AQ_Empty (&m_tst_queue))
   {
     printf ("No tests registered.\n");
     return 1;
@@ -47,9 +47,9 @@ UT_RunAll (void)
 
   printf ("Running unit tests...\n\n");
 
-  while (!AQ_Empty (&m_tst_queue))
+  while (!C1_AQ_Empty (&m_tst_queue))
   {
-    UnitTest *t = (UnitTest *)AQ_Dequeue (&m_tst_queue);
+    UnitTest *t = (UnitTest *)C1_AQ_Dequeue (&m_tst_queue);
     if (!t)
       break;
 
@@ -60,7 +60,7 @@ UT_RunAll (void)
     passed++;
   }
 
-  AQ_Destroy (&m_tst_queue);
+  C1_AQ_Destroy (&m_tst_queue);
 
   printf ("Tests done: %d passed, %d failed\n", passed, failed);
   return failed == 0 ? 0 : 1;

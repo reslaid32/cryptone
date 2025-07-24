@@ -5,19 +5,19 @@
 #include "queue.h"
 
 void
-Q_Init (Queue *q)
+C1_Q_Init (Queue *q)
 {
   q->front = q->rear = NULL;
 }
 
 int
-Q_Empty (Queue *q)
+C1_Q_Empty (Queue *q)
 {
   return q->front == NULL;
 }
 
 void
-Q_Enqueue (Queue *q, void *data)
+C1_Q_Enqueue (Queue *q, void *data)
 {
   QNode *newNode = malloc (sizeof (QNode));
   if (!newNode)
@@ -40,9 +40,9 @@ Q_Enqueue (Queue *q, void *data)
 }
 
 void *
-Q_Dequeue (Queue *q)
+C1_Q_Dequeue (Queue *q)
 {
-  if (Q_Empty (q))
+  if (C1_Q_Empty (q))
     return NULL;
 
   QNode *temp = q->front;
@@ -57,16 +57,16 @@ Q_Dequeue (Queue *q)
 }
 
 void *
-Q_Peek (Queue *q)
+C1_Q_Peek (Queue *q)
 {
-  if (Q_Empty (q))
+  if (C1_Q_Empty (q))
     return NULL;
   return q->front->data;
 }
 
 void
-Q_Destroy (Queue *q)
+C1_Q_Destroy (Queue *q)
 {
-  while (!Q_Empty (q))
-    Q_Dequeue (q);
+  while (!C1_Q_Empty (q))
+    C1_Q_Dequeue (q);
 }

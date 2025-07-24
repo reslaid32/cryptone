@@ -3,7 +3,7 @@
 #include <string.h>
 
 void
-Stack_Init (Stack *s, size_t elem_size, int capacity)
+C1_Stack_Init (Stack *s, size_t elem_size, int capacity)
 {
   s->data = malloc (elem_size * capacity);
   if (!s->data)
@@ -18,16 +18,16 @@ Stack_Init (Stack *s, size_t elem_size, int capacity)
 }
 
 void
-Stack_Destroy (Stack *s)
+C1_Stack_Destroy (Stack *s)
 {
   if (s)
     free (s->data);
 }
 
 int
-Stack_Push (Stack *s, const void *value)
+C1_Stack_Push (Stack *s, const void *value)
 {
-  if (Stack_Full (s))
+  if (C1_Stack_Full (s))
     return 0;
 
   s->top++;
@@ -37,9 +37,9 @@ Stack_Push (Stack *s, const void *value)
 }
 
 int
-Stack_Pop (Stack *s, void *out)
+C1_Stack_Pop (Stack *s, void *out)
 {
-  if (Stack_Empty (s))
+  if (C1_Stack_Empty (s))
     return 0;
 
   void *src = (char *)s->data + s->top * s->elem_size;
@@ -50,9 +50,9 @@ Stack_Pop (Stack *s, void *out)
 }
 
 int
-Stack_Peek (Stack *s, void *out)
+C1_Stack_Peek (Stack *s, void *out)
 {
-  if (Stack_Empty (s))
+  if (C1_Stack_Empty (s))
     return 0;
 
   void *src = (char *)s->data + s->top * s->elem_size;
@@ -62,19 +62,19 @@ Stack_Peek (Stack *s, void *out)
 }
 
 int
-Stack_Empty (const Stack *s)
+C1_Stack_Empty (const Stack *s)
 {
   return s->top == -1;
 }
 
 int
-Stack_Full (const Stack *s)
+C1_Stack_Full (const Stack *s)
 {
   return s->top >= s->capacity - 1;
 }
 
 int
-Stack_Size (const Stack *s)
+C1_Stack_Size (const Stack *s)
 {
   return s->top + 1;
 }

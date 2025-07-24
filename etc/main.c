@@ -5,10 +5,10 @@
 int
 main (void)
 {
-  LOG_SetAutoNewline (1);
-  LOG_Info ("aes = %s", AES_Impl_String ());
+  C1_LOG_SetAutoNewline (1);
+  C1_LOG_Info ("aes = %s", AES_Impl_String ());
 
-  LOG_SetLevel (LOG_VERBOSE);
+  C1_LOG_SetLevel (LOG_VERBOSE);
   int log_enabled =
 #ifndef __UT_QUIET
       1
@@ -16,7 +16,7 @@ main (void)
       0
 #endif
       ;
-  LOG_Enable (log_enabled);
+  C1_LOG_Enable (log_enabled);
 
   UT_RunAll ();
 

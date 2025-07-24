@@ -18,8 +18,8 @@ test_padder (PAD_Identifier id, const char *name, PAD_Padder *padder,
   if (!padder || !orig_buf)
     return;
 
-  LOG_Verbose ("\tCurrent padder: \t{ .id = %u, .name = \"%s\" }\n", id,
-               name);
+  C1_LOG_Verbose ("\tCurrent padder: \t{ .id = %u, .name = \"%s\" }\n", id,
+                  name);
 
   size_t padded_len
       = padder->bound (orig_buf, orig_len, block_size, PA_PAD);
@@ -38,7 +38,7 @@ test_padder (PAD_Identifier id, const char *name, PAD_Padder *padder,
     padded_buf = (uint8_t *)malloc (padded_len);
     if (!padded_buf)
     {
-      LOG_Fatal ("[  padded_buf] \tAllocation error\n");
+      C1_LOG_Fatal ("[  padded_buf] \tAllocation error\n");
       return;
     }
     need_free_padded = 1;
@@ -46,13 +46,13 @@ test_padder (PAD_Identifier id, const char *name, PAD_Padder *padder,
 
   padder->process (padded_buf, orig_buf, orig_len, block_size, PA_PAD);
 
-  LOG_Verbose ("\tOriginal length:\t%zu\n", orig_len);
-  LOG_Verbose ("\tPadded length:\t\t%zu\n", padded_len);
+  C1_LOG_Verbose ("\tOriginal length:\t%zu\n", orig_len);
+  C1_LOG_Verbose ("\tPadded length:\t\t%zu\n", padded_len);
 
-  LOG_Verbose ("\tPadded data:\t\t");
+  C1_LOG_Verbose ("\tPadded data:\t\t");
   for (size_t i = 0; i < padded_len; i++)
-    LOG_printf ("%02X ", padded_buf[i]);
-  LOG_printf ("\n");
+    C1_LOG_printf ("%02X ", padded_buf[i]);
+  C1_LOG_printf ("\n");
 
   size_t unpadded_len
       = padder->bound (padded_buf, padded_len, block_size, PA_UNPAD);
@@ -62,7 +62,7 @@ test_padder (PAD_Identifier id, const char *name, PAD_Padder *padder,
     unpadded_buf = (uint8_t *)malloc (unpadded_len);
     if (!unpadded_buf)
     {
-      LOG_Fatal ("[unpadded_buf] \tAllocation error\n");
+      C1_LOG_Fatal ("[unpadded_buf] \tAllocation error\n");
       if (need_free_padded)
         free (padded_buf);
       return;
@@ -73,11 +73,11 @@ test_padder (PAD_Identifier id, const char *name, PAD_Padder *padder,
   padder->process (unpadded_buf, padded_buf, padded_len, block_size,
                    PA_UNPAD);
 
-  LOG_Verbose ("\tUnpadded length:\t%zu\n", unpadded_len);
-  LOG_Verbose ("\tUnpadded data:\t\t");
+  C1_LOG_Verbose ("\tUnpadded length:\t%zu\n", unpadded_len);
+  C1_LOG_Verbose ("\tUnpadded data:\t\t");
   for (size_t i = 0; i < unpadded_len; i++)
-    LOG_printf ("%02X ", unpadded_buf[i]);
-  LOG_printf ("\n");
+    C1_LOG_printf ("%02X ", unpadded_buf[i]);
+  C1_LOG_printf ("\n");
 
   UT_Assert (memcmp (orig_buf, unpadded_buf, orig_len) == 0,
              "unpadded_buf must be eq orig_buf");
@@ -113,8 +113,8 @@ int test_padder_wrapper (const char *name, uint8_t *buf, size_t len,
 void
 _unit ()
 {
-  LOG_PushFrame ();
-  LOG_SetAutoNewline (0);
+  C1_LOG_PushFrame ();
+  C1_LOG_SetAutoNewline (0);
 
   uint8_t input[20]  = { 1,  2,  3,  4,  5,  6,  7,  8,  9,  10,
                          11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
@@ -124,7 +124,7 @@ _unit ()
   test_padder_wrapper ("pkcs7", input, input_len, block_size);
   test_padder_wrapper ("x923", input, input_len, block_size);
 
-  LOG_PopFrame ();
+  C1_LOG_PopFrame ();
 }
 
 __attribute__ ((constructor (200))) void

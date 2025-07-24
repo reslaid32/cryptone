@@ -6,14 +6,14 @@
 #include "qnode.h"
 
 void
-AQ_Init (AtomicQueue *q)
+C1_AQ_Init (AtomicQueue *q)
 {
   q->front = q->rear = NULL;
   pthread_mutex_init (&q->lock, NULL);
 }
 
 int
-AQ_Empty (AtomicQueue *q)
+C1_AQ_Empty (AtomicQueue *q)
 {
   pthread_mutex_lock (&q->lock);
   int result = (q->front == NULL);
@@ -22,7 +22,7 @@ AQ_Empty (AtomicQueue *q)
 }
 
 void
-AQ_Enqueue (AtomicQueue *q, void *data)
+C1_AQ_Enqueue (AtomicQueue *q, void *data)
 {
   QNode *newNode = malloc (sizeof (QNode));
   if (!newNode)
@@ -47,7 +47,7 @@ AQ_Enqueue (AtomicQueue *q, void *data)
 }
 
 void *
-AQ_Dequeue (AtomicQueue *q)
+C1_AQ_Dequeue (AtomicQueue *q)
 {
   pthread_mutex_lock (&q->lock);
 
@@ -70,7 +70,7 @@ AQ_Dequeue (AtomicQueue *q)
 }
 
 void *
-AQ_Peek (AtomicQueue *q)
+C1_AQ_Peek (AtomicQueue *q)
 {
   pthread_mutex_lock (&q->lock);
   void *data = (q->front != NULL) ? q->front->data : NULL;
@@ -79,7 +79,7 @@ AQ_Peek (AtomicQueue *q)
 }
 
 void
-AQ_Destroy (AtomicQueue *q)
+C1_AQ_Destroy (AtomicQueue *q)
 {
   pthread_mutex_lock (&q->lock);
   QNode *node = q->front;

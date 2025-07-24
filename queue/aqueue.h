@@ -10,11 +10,11 @@ typedef struct AtomicQueue
   pthread_mutex_t lock;
 } AtomicQueue;
 
-void  AQ_Init (AtomicQueue *q);
-int   AQ_Empty (AtomicQueue *q);
-void  AQ_Enqueue (AtomicQueue *q, void *data);
-void *AQ_Dequeue (AtomicQueue *q);
-void *AQ_Peek (AtomicQueue *q);
-void  AQ_Destroy (AtomicQueue *q);
+void  C1_AQ_Init (AtomicQueue *q);
+int   C1_AQ_Empty (AtomicQueue *q);
+void  C1_AQ_Enqueue (AtomicQueue *q, void *data);
+void *C1_AQ_Dequeue (AtomicQueue *q);
+void *C1_AQ_Peek (AtomicQueue *q);
+void  C1_AQ_Destroy (AtomicQueue *q);
 
 #endif

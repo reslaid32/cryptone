@@ -30,13 +30,13 @@ static AtomicQueue   g_pending_padders;
 __attribute__ ((constructor (102))) static void
 PAD_Init ()
 {
-  AQ_Init (&g_pending_padders);
+  C1_AQ_Init (&g_pending_padders);
 }
 
 __attribute__ ((destructor)) static void
 PAD_Shutdown ()
 {
-  AQ_Destroy (&g_pending_padders);
+  C1_AQ_Destroy (&g_pending_padders);
 }
 
 int
@@ -100,7 +100,7 @@ PAD_Register (PAD_Entry padder, PAD_Identifier *out_id)
     return -1;
 
   pending->padder = padder;
-  AQ_Enqueue (&g_pending_padders, pending);
+  C1_AQ_Enqueue (&g_pending_padders, pending);
 
   return 0;
 }
@@ -109,7 +109,7 @@ __attribute__ ((constructor (32767))) void
 PAD_Dequeue (void)
 {
   void *ptr;
-  while ((ptr = AQ_Dequeue (&g_pending_padders)) != NULL)
+  while ((ptr = C1_AQ_Dequeue (&g_pending_padders)) != NULL)
   {
     PAD_Pending *pending = ptr;
     PAD_Entry    padder  = pending->padder;

@@ -52,20 +52,20 @@ test_ecb (AES_Context *ctx, uint8_t *input, size_t len, uint8_t *key,
   free (ossl_enc);
 #endif
 
-  LOG_Verbose ("\tECB Encrypted:\t");
+  C1_LOG_Verbose ("\tECB Encrypted:\t");
   for (size_t i = 0; i < len; ++i)
-    LOG_printf ("%02x ", enc[i]);
-  LOG_printf ("\n");
+    C1_LOG_printf ("%02x ", enc[i]);
+  C1_LOG_printf ("\n");
 
-  LOG_Verbose ("\tECB Decrypted:\t");
+  C1_LOG_Verbose ("\tECB Decrypted:\t");
   for (size_t i = 0; i < len; ++i)
-    LOG_printf ("%02x ", dec[i]);
-  LOG_printf ("\n");
+    C1_LOG_printf ("%02x ", dec[i]);
+  C1_LOG_printf ("\n");
 
-  LOG_Verbose ("\tECB Input:\t");
+  C1_LOG_Verbose ("\tECB Input:\t");
   for (size_t i = 0; i < len; ++i)
-    LOG_printf ("%02x ", input[i]);
-  LOG_printf ("\n");
+    C1_LOG_printf ("%02x ", input[i]);
+  C1_LOG_printf ("\n");
 
   UT_Assert (memcmp (input, dec, len) == 0,
              "AES ECB decrypt must match input");
@@ -121,20 +121,20 @@ test_cbc (AES_Context *ctx, uint8_t *input, size_t len, uint8_t *key,
   memcpy (iv_dec, iv_orig, 16);
   AES_Context_CBC_Decrypt (ctx, enc, dec, len, iv_dec);
 
-  LOG_Verbose ("\tCBC Encrypted:\t");
+  C1_LOG_Verbose ("\tCBC Encrypted:\t");
   for (size_t i = 0; i < len; ++i)
-    LOG_printf ("%02x ", enc[i]);
-  LOG_printf ("\n");
+    C1_LOG_printf ("%02x ", enc[i]);
+  C1_LOG_printf ("\n");
 
-  LOG_Verbose ("\tCBC Decrypted:\t");
+  C1_LOG_Verbose ("\tCBC Decrypted:\t");
   for (size_t i = 0; i < len; ++i)
-    LOG_printf ("%02x ", dec[i]);
-  LOG_printf ("\n");
+    C1_LOG_printf ("%02x ", dec[i]);
+  C1_LOG_printf ("\n");
 
-  LOG_Verbose ("\tCBC Input:\t");
+  C1_LOG_Verbose ("\tCBC Input:\t");
   for (size_t i = 0; i < len; ++i)
-    LOG_printf ("%02x ", input[i]);
-  LOG_printf ("\n");
+    C1_LOG_printf ("%02x ", input[i]);
+  C1_LOG_printf ("\n");
 
   UT_Assert (memcmp (input, dec, len) == 0,
              "AES CBC decrypt must match input");
@@ -190,20 +190,20 @@ test_ctr (AES_Context *ctx, uint8_t *input, size_t len, uint8_t *key,
   free (ossl_enc);
 #endif
 
-  LOG_Verbose ("\tCTR Encrypted:\t");
+  C1_LOG_Verbose ("\tCTR Encrypted:\t");
   for (size_t i = 0; i < len; ++i)
-    LOG_printf ("%02x ", enc[i]);
-  LOG_printf ("\n");
+    C1_LOG_printf ("%02x ", enc[i]);
+  C1_LOG_printf ("\n");
 
-  LOG_Verbose ("\tCTR Decrypted:\t");
+  C1_LOG_Verbose ("\tCTR Decrypted:\t");
   for (size_t i = 0; i < len; ++i)
-    LOG_printf ("%02x ", dec[i]);
-  LOG_printf ("\n");
+    C1_LOG_printf ("%02x ", dec[i]);
+  C1_LOG_printf ("\n");
 
-  LOG_Verbose ("\tCTR Input:\t");
+  C1_LOG_Verbose ("\tCTR Input:\t");
   for (size_t i = 0; i < len; ++i)
-    LOG_printf ("%02x ", input[i]);
-  LOG_printf ("\n");
+    C1_LOG_printf ("%02x ", input[i]);
+  C1_LOG_printf ("\n");
 
   UT_Assert (memcmp (input, dec, len) == 0,
              "AES CTR decrypt must match input");
@@ -215,8 +215,8 @@ test_ctr (AES_Context *ctx, uint8_t *input, size_t len, uint8_t *key,
 static void
 _unit (void)
 {
-  LOG_PushFrame ();
-  LOG_SetAutoNewline (0);
+  C1_LOG_PushFrame ();
+  C1_LOG_SetAutoNewline (0);
 
   uint8_t key128[AES128_KEY_BYTES] = {
     0x60, 0x3d, 0xeb, 0x10, 0x15, 0xca, 0x71, 0xbe,
@@ -236,13 +236,13 @@ _unit (void)
 
   AES_Context *ctx              = AES_Context_Create ();
 
-  LOG_printf ("=== AES-128 ===\n");
+  C1_LOG_printf ("=== AES-128 ===\n");
 
   test_ecb (ctx, input, sizeof (input), key128, sizeof (key128));
   test_cbc (ctx, input, sizeof (input), key128, sizeof (key128), iv);
   test_ctr (ctx, input, sizeof (input), key128, sizeof (key128), nonce);
 
-  LOG_printf ("=== AES-256 ===\n");
+  C1_LOG_printf ("=== AES-256 ===\n");
 
   test_ecb (ctx, input, sizeof (input), key256, sizeof (key256));
   test_cbc (ctx, input, sizeof (input), key256, sizeof (key256), iv);
@@ -250,7 +250,7 @@ _unit (void)
 
   AES_Context_Destroy (ctx);
 
-  LOG_PopFrame ();
+  C1_LOG_PopFrame ();
 }
 
 __attribute__ ((constructor (150))) static void

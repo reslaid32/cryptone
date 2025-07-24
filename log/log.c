@@ -54,7 +54,7 @@ static const char *level_colors[]
         COLOR_WARN,  COLOR_ERROR,   COLOR_FATAL };
 
 void
-LOG_SetLevel (LogLevel level)
+C1_LOG_SetLevel (LogLevel level)
 {
   pthread_mutex_lock (&log_mutex);
   g_log_lvl = level;
@@ -62,7 +62,7 @@ LOG_SetLevel (LogLevel level)
 }
 
 LogLevel
-LOG_GetLevel (void)
+C1_LOG_GetLevel (void)
 {
   pthread_mutex_lock (&log_mutex);
   LogLevel lvl = g_log_lvl;
@@ -71,7 +71,7 @@ LOG_GetLevel (void)
 }
 
 void
-LOG_SetStream (FILE *stream)
+C1_LOG_SetStream (FILE *stream)
 {
   pthread_mutex_lock (&log_mutex);
   g_log_stream = stream;
@@ -79,7 +79,7 @@ LOG_SetStream (FILE *stream)
 }
 
 FILE *
-LOG_GetStream (void)
+C1_LOG_GetStream (void)
 {
   pthread_mutex_lock (&log_mutex);
   FILE *s = g_log_stream;
@@ -88,7 +88,7 @@ LOG_GetStream (void)
 }
 
 void
-LOG_SetAutoNewline (int autonewl)
+C1_LOG_SetAutoNewline (int autonewl)
 {
   pthread_mutex_lock (&log_mutex);
   g_log_autonewl = autonewl;
@@ -96,7 +96,7 @@ LOG_SetAutoNewline (int autonewl)
 }
 
 int
-LOG_GetAutoNewline (void)
+C1_LOG_GetAutoNewline (void)
 {
   pthread_mutex_lock (&log_mutex);
   int newl = g_log_autonewl;
@@ -105,7 +105,7 @@ LOG_GetAutoNewline (void)
 }
 
 void
-LOG_Enable (int enable)
+C1_LOG_Enable (int enable)
 {
   pthread_mutex_lock (&log_mutex);
   g_log_enabled = enable;
@@ -113,7 +113,7 @@ LOG_Enable (int enable)
 }
 
 int
-LOG_Enabled (void)
+C1_LOG_Enabled (void)
 {
   pthread_mutex_lock (&log_mutex);
   int enabled = g_log_enabled;
@@ -122,7 +122,7 @@ LOG_Enabled (void)
 }
 
 void
-LOG_vprintf (const char *fmt, va_list va)
+C1_LOG_vprintf (const char *fmt, va_list va)
 {
   pthread_mutex_lock (&log_mutex);
 
@@ -138,28 +138,28 @@ LOG_vprintf (const char *fmt, va_list va)
 }
 
 void
-LOG_printf (const char *fmt, ...)
+C1_LOG_printf (const char *fmt, ...)
 {
   va_list va;
   va_start (va, fmt);
-  LOG_vprintf (fmt, va);
+  C1_LOG_vprintf (fmt, va);
   va_end (va);
 }
 
 __attribute__ ((constructor (102))) static void
-LOG_Init ()
+C1_LOG_Init ()
 {
-  Stack_Init (&log_stack, sizeof (LogFrame), sizeof (LogFrame) * 2);
+  C1_Stack_Init (&log_stack, sizeof (LogFrame), sizeof (LogFrame) * 2);
 }
 
 __attribute__ ((destructor)) static void
-LOG_Shutdown ()
+C1_LOG_Shutdown ()
 {
-  Stack_Destroy (&log_stack);
+  C1_Stack_Destroy (&log_stack);
 }
 
 void
-LOG_PushFrame (void)
+C1_LOG_PushFrame (void)
 {
   pthread_mutex_lock (&log_mutex);
 
@@ -170,19 +170,19 @@ LOG_PushFrame (void)
     .enabled  = g_log_enabled,
   };
 
-  if (!Stack_Push (&log_stack, &frame))
+  if (!C1_Stack_Push (&log_stack, &frame))
     ferroratf (stderr, "log/frame", "failed to push frame");
 
   pthread_mutex_unlock (&log_mutex);
 }
 
 void
-LOG_PopFrame (void)
+C1_LOG_PopFrame (void)
 {
   pthread_mutex_lock (&log_mutex);
 
   LogFrame frame;
-  if (!Stack_Pop (&log_stack, &frame))
+  if (!C1_Stack_Pop (&log_stack, &frame))
     ferroratf (stderr, "log/frame", "failed to pop frame: underflow");
 
   g_log_lvl      = frame.level;
@@ -194,7 +194,8 @@ LOG_PopFrame (void)
 }
 
 void
-LOG_Emit (LogLevel level, const char *file, int line, const char *fmt, ...)
+C1_LOG_Emit (LogLevel level, const char *file, int line, const char *fmt,
+             ...)
 {
   pthread_mutex_lock (&log_mutex);
 
