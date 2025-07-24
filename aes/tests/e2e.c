@@ -1,3 +1,4 @@
+#include "../../log/log.h"
 #include "../../unit/unit.h"
 
 #include "../../include/cryptone/aes.h"
@@ -51,20 +52,20 @@ test_ecb (AES_Context *ctx, uint8_t *input, size_t len, uint8_t *key,
   free (ossl_enc);
 #endif
 
-  __UT_PRINTF ("Encrypted:\n");
+  LOG_Verbose ("\tECB Encrypted:\t");
   for (size_t i = 0; i < len; ++i)
-    __UT_PRINTF ("%02x ", enc[i]);
-  __UT_PRINTF ("\n");
+    LOG_printf ("%02x ", enc[i]);
+  LOG_printf ("\n");
 
-  __UT_PRINTF ("Decrypted:\n");
+  LOG_Verbose ("\tECB Decrypted:\t");
   for (size_t i = 0; i < len; ++i)
-    __UT_PRINTF ("%02x ", dec[i]);
-  __UT_PRINTF ("\n");
+    LOG_printf ("%02x ", dec[i]);
+  LOG_printf ("\n");
 
-  __UT_PRINTF ("ECB Input:\n");
+  LOG_Verbose ("\tECB Input:\t");
   for (size_t i = 0; i < len; ++i)
-    __UT_PRINTF ("%02x ", input[i]);
-  __UT_PRINTF ("\n");
+    LOG_printf ("%02x ", input[i]);
+  LOG_printf ("\n");
 
   UT_Assert (memcmp (input, dec, len) == 0,
              "AES ECB decrypt must match input");
@@ -120,16 +121,20 @@ test_cbc (AES_Context *ctx, uint8_t *input, size_t len, uint8_t *key,
   memcpy (iv_dec, iv_orig, 16);
   AES_Context_CBC_Decrypt (ctx, enc, dec, len, iv_dec);
 
-  __UT_PRINTF ("CBC Encrypted:\n");
+  LOG_Verbose ("\tCBC Encrypted:\t");
   for (size_t i = 0; i < len; ++i)
-    __UT_PRINTF ("%02x ", enc[i]);
-  __UT_PRINTF ("\nCBC Decrypted:\n");
+    LOG_printf ("%02x ", enc[i]);
+  LOG_printf ("\n");
+
+  LOG_Verbose ("\tCBC Decrypted:\t");
   for (size_t i = 0; i < len; ++i)
-    __UT_PRINTF ("%02x ", dec[i]);
-  __UT_PRINTF ("\nCBC Input:\n");
+    LOG_printf ("%02x ", dec[i]);
+  LOG_printf ("\n");
+
+  LOG_Verbose ("\tCBC Input:\t");
   for (size_t i = 0; i < len; ++i)
-    __UT_PRINTF ("%02x ", input[i]);
-  __UT_PRINTF ("\n");
+    LOG_printf ("%02x ", input[i]);
+  LOG_printf ("\n");
 
   UT_Assert (memcmp (input, dec, len) == 0,
              "AES CBC decrypt must match input");
@@ -185,20 +190,20 @@ test_ctr (AES_Context *ctx, uint8_t *input, size_t len, uint8_t *key,
   free (ossl_enc);
 #endif
 
-  __UT_PRINTF ("CTR Encrypted:\n");
+  LOG_Verbose ("\tCTR Encrypted:\t");
   for (size_t i = 0; i < len; ++i)
-    __UT_PRINTF ("%02x ", enc[i]);
-  __UT_PRINTF ("\n");
+    LOG_printf ("%02x ", enc[i]);
+  LOG_printf ("\n");
 
-  __UT_PRINTF ("CTR Decrypted:\n");
+  LOG_Verbose ("\tCTR Decrypted:\t");
   for (size_t i = 0; i < len; ++i)
-    __UT_PRINTF ("%02x ", dec[i]);
-  __UT_PRINTF ("\n");
+    LOG_printf ("%02x ", dec[i]);
+  LOG_printf ("\n");
 
-  __UT_PRINTF ("CTR Input:\n");
+  LOG_Verbose ("\tCTR Input:\t");
   for (size_t i = 0; i < len; ++i)
-    __UT_PRINTF ("%02x ", input[i]);
-  __UT_PRINTF ("\n");
+    LOG_printf ("%02x ", input[i]);
+  LOG_printf ("\n");
 
   UT_Assert (memcmp (input, dec, len) == 0,
              "AES CTR decrypt must match input");
@@ -210,6 +215,9 @@ test_ctr (AES_Context *ctx, uint8_t *input, size_t len, uint8_t *key,
 static void
 _unit (void)
 {
+  LOG_PushFrame ();
+  LOG_SetAutoNewline (0);
+
   uint8_t key128[AES128_KEY_BYTES] = {
     0x60, 0x3d, 0xeb, 0x10, 0x15, 0xca, 0x71, 0xbe,
     0x2b, 0x73, 0xae, 0xf0, 0x85, 0x7d, 0x77, 0x81,
@@ -228,27 +236,21 @@ _unit (void)
 
   AES_Context *ctx              = AES_Context_Create ();
 
-  __UT_PRINTF ("=== AES-128 ===\n");
-  __UT_PRINTF ("\nECB mode:\n");
+  LOG_printf ("=== AES-128 ===\n");
+
   test_ecb (ctx, input, sizeof (input), key128, sizeof (key128));
-
-  __UT_PRINTF ("\nCBC mode:\n");
   test_cbc (ctx, input, sizeof (input), key128, sizeof (key128), iv);
-
-  __UT_PRINTF ("\nCTR mode:\n");
   test_ctr (ctx, input, sizeof (input), key128, sizeof (key128), nonce);
 
-  __UT_PRINTF ("\n=== AES-256 ===\n");
-  __UT_PRINTF ("\nECB mode:\n");
+  LOG_printf ("=== AES-256 ===\n");
+
   test_ecb (ctx, input, sizeof (input), key256, sizeof (key256));
-
-  __UT_PRINTF ("\nCBC mode:\n");
   test_cbc (ctx, input, sizeof (input), key256, sizeof (key256), iv);
-
-  __UT_PRINTF ("\nCTR mode:\n");
   test_ctr (ctx, input, sizeof (input), key256, sizeof (key256), nonce);
 
   AES_Context_Destroy (ctx);
+
+  LOG_PopFrame ();
 }
 
 __attribute__ ((constructor (150))) static void

@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <string.h>
 
 #include "../../include/cryptone/aes.h"
@@ -23,9 +22,7 @@ test_encrypt_decrypt_block (void)
 static void
 _unit (void)
 {
-  __UT_PRINTF ("Running AES low-level function tests...\n");
   test_encrypt_decrypt_block ();
-  __UT_PRINTF ("AES low-level function tests passed.\n");
 }
 
 __attribute__ ((constructor (200))) static void

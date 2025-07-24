@@ -19,7 +19,7 @@ ifeq ($(ENABLE_AES_VALIDATION), 1)
 	LDFLAGS_EXE += -lcrypto
 endif
 
-SRCDIRS_COMMON = aes padding queue error log wunit
+SRCDIRS_COMMON = aes padding queue stack error log wunit
 SRCDIRS_EXE    = $(SRCDIRS_COMMON) unit etc
 
 rwildcard = $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
